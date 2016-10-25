@@ -1,0 +1,61 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Example of Route53 HostedZone Details",
+    "Metadata": {
+
+    },
+    "Parameters": {
+      "Route53HostedZoneDetailsLambdaName": {
+        "Description": "ElasticTranscoderPipeline lambda name",
+        "Type": "String"
+      },
+      "HostedZone": {
+        "Description": "The HostedZone",
+        "Type": "AWS::Route53::HostedZone::Id"
+      }
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+
+      "HostedZoneDetails": {
+        "Type": "Custom::Route53HostedZoneDetails",
+        "Version": "1.0",
+        "Properties": {
+          "ServiceToken": {"Fn::Join" : [":",[ "arn:aws:lambda", { "Ref": "AWS::Region" }, { "Ref": "AWS::AccountId" }, "function", { "Ref": "Route53HostedZoneDetailsLambdaName" } ] ]},
+          "Id": { "Ref": "HostedZone" }
+        }
+      }
+
+    },
+    "Outputs": {
+      "Domain": {
+        "Value": { "Ref": "HostedZoneDetails" }
+      },
+      "ResourceRecordSetCount": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.ResourceRecordSetCount"] }
+      },
+      "CallerReference": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.CallerReference"] }
+      },
+      "ConfigComment": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.Config.Comment"] }
+      },
+      "ConfigPrivateZone": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.Config.PrivateZone"] }
+      },
+      "Id": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.Id"] }
+      },
+      "Name": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "HostedZone.Name"] }
+      },
+      "DelegationSet": {
+        "Value": { "Fn::GetAtt": ["HostedZoneDetails", "DelegationSet.NameServers"] }
+      }
+    }
+}
